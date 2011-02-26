@@ -1,4 +1,4 @@
-bin_PROGRAMS = rgtpd
+libexec_PROGRAMS = rgtpd
 
 rgtpd_SOURCES = \
 	groggsd.c \
