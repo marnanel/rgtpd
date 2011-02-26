@@ -1,0 +1,18 @@
+#!/usr/bin/perl
+
+$ish='/home/mjh22/groggs/src/install-sh';
+
+while ($ARGV[0] =~ m/^-/) {
+    $_= shift(@ARGV); push(@opts,$_);
+    if (m/^-m$/) { $z= shift(@ARGV); push(@opts,$z); }
+    last if m/^--$/;
+}
+
+@ARGV >= 2 || die "install-pl: too few args\n";
+$dest= pop(@ARGV);
+
+while (@ARGV) {
+    $_= shift(@ARGV);
+    $!=0; system($ish,@opts,$_,$dest);
+    $? && die "install-pl: install-sh failed $? $!\n";
+}

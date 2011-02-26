@@ -1,0 +1,168 @@
+#!/usr/bin/perl
+
+# This is free software; you may redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is made available in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# A copy of the GNU General Public License can be found in the top-
+# level src directory.  Alternatively could write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+
+$abbrev= 'you can leave off $addrsuffix, though';
+sub addrmodify {
+    return 'cam.ac.uk' if $_ eq 'cam';
+    return 'cam.ac.uk' if $_ eq 'cam.ac.uk';
+    return 'chiark.greenend.org.uk' if $_ eq 'chiark.greenend.org.uk';
+    return $_ if m/\.ucam\.org$/;
+    return "$_.cam.ac.uk" unless m/\./;
+    return '' unless m/\.cam\.ac\.uk$/;
+    return $_;
+}
+
+$mailhdrs= <<END
+From: soc-groggs-editors\@lists.cam.ac.uk
+Reply-To: soc-groggs-editors-request\@lists.cam.ac.uk
+Subject: Welcome to GROGGS
+END
+;
+
+$mailsign= <<END
+Martin Hardcastle
+GROGGS system administrator
+END
+;
+
+
+@access= ('none','reading','posting','editorial');
+$user= shift;
+$access= $access[shift];
+$clientid= shift;
+$hexkey= <STDIN>;
+
+sub log {
+    @gmtime= gmtime(time);
+    @rgmtime= reverse(@gmtime);
+    printf STDERR "%02d.%02d.%02d %02d:%02d:%02d GMT %s regusermail %s : %s\n",
+         @gmtime[3 .. 5], @rgmtime[6 .. 8], $_[0], $clientid, $_[1];
+}    
+
+if ($user !~ m/\@/) {
+    &log("Trace", "511 Userid without hostname \`$user'");
+    print STDOUT "511 Need a hostname ($abbrev)\r\n";
+    exit 11; # means "keep connection open"
+}
+
+if ($user =~ m/\n/ || $user !~ m/^[\w.]+\@\S+$/ || $user =~ m/\@.*\@/) {
+    &log("ALERT", "482 Bad userid \`$user'");
+    print STDOUT "482 Access denied\r\n";
+    exit 0;
+}
+
+$_= $user; s/^\w+\@//; $localpart= $&;
+$addr= &addrmodify;
+if ($addr eq '') {
+    &log("ALERT", "Account request from $user forwarded\n");
+
+    $message=<<END
+From: mjh22\@srcf.ucam.org
+To: m.j.hardcastle\@herts.ac.uk
+Subject: Groggs account request -- $user
+
+$user
+$access
+$hexkey
+END
+    ;
+    if (!open(P,"|/usr/sbin/sendmail -odi -oep -t")) {
+	&log("ERROR", "Failed to run sendmail: $!\n");
+	print STDOUT "484 Failure running mail program\r\n";
+	exit 0;
+    }
+    
+    if (!print(P $message)) {
+	&log("ERROR", "Failed to write to sendmail: $!\n");
+	print STDOUT "484 Failure piping to mail program\r\n";
+	exit 0;
+    }
+    
+    close(P);
+    
+    if ($?) {
+	&log("ERROR", "Failed to finish sendmail: $?\n");
+	print STDOUT "484 Failure finishing mail message\r\n";
+	exit 0;
+    }
+
+
+    print STDOUT "280 Await an e-mail confirmation from the Editor.\r\n";
+    exit 0;
+}
+
+$hexkey =~ s/.{8}/$& /g; $hexkey =~ s/\s+\n?$//;
+
+$addr= $localpart.$addr;
+
+$message= $mailhdrs.<<END.$mailsign
+To: $addr
+
+Thank you for your application for membership of GROGGS.
+
+Welcome to GROGGS - $access access is now available to you.
+
+A GROGGS userid been created for you.  In order for you to be able to
+use it you must use your client to access Groggs within one week; if
+you don't do this your membership and userid will expire and you will
+need to reapply.
+
+It will ask you for the userid you gave when applying, which was
+\`$user'.  It will also ask you for a secret number.  This secret
+number is used to verify that it is really you who is posting a message.
+The secret number is:
+   $hexkey
+
+Do not reveal this number to anyone.  If you should lose it (for
+example by accidentally deleting your GROGGS setup files) you should
+ask me or one of the Editors to tell you what it is.  If you suspect
+someone else knows it I or the Editors can change it for you.
+
+When you have made use of this userid and password it will only expire
+if you leave it unused for 3 years.
+
+Note: please do not post any test items or replies!  If you can see
+GROGGS using your account and secret number then all is well and there
+is no need to test anything.
+
+Happy GROGGing!
+
+END
+;
+
+if (!open(P,"|/usr/sbin/sendmail -odi -oep -t")) {
+    &log("ERROR", "Failed to run sendmail: $!\n");
+    print STDOUT "484 Failure running mail program\r\n";
+    exit 0;
+}
+
+if (!print(P $message)) {
+    &log("ERROR", "Failed to write to sendmail: $!\n");
+    print STDOUT "484 Failure piping to mail program\r\n";
+    exit 0;
+}
+
+close(P);
+
+if ($?) {
+    &log("ERROR", "Failed to finish sendmail: $?\n");
+    print STDOUT "484 Failure finishing mail message\r\n";
+    exit 0;
+}
+
+print STDOUT "280 Await the email I have sent to $addr\r\n";
+&log("ALERT", "Invitation sent to $addr\n");
+exit 0;

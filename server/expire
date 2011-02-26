@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+#
+# Expires
+
+$udbmanage= 'udbmanage';
+$ENV{'PATH'}= '/home/mjh22/groggs/sbin:'.$ENV{'PATH'};
+
+chdir("/home/mjh22/groggs/spool") || die "expire: chdir: $!\n";
+
+%exptime= ('write/md5',17520, # 3 years
+           '*/md5new', 168);   # 1 week for unregistered people
+
+# This is free software; may redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is made available in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# A copy of the GNU General Public License can be found in the top-
+# level src directory.  Alternatively could write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA. 
+
+@ARGV && die "expire: usage: expire\n";
+
+chop($date=`date`);
+
+open(STDOUT,">>log/expire") || die "expire: $date: open log/expire: $!\n";
+$|=1;
+
+print "expire $date: running expiry check\n";
+
+open(L,"$udbmanage -l |") || die "expire $date: pipe udbmanage: $!\n";
+
+while(<L>) {
+    chop;
+    m/^\s*\d+:\s+(\d+)\s+(\w+)\s+(\w+)\s+(\w+)\s+(\S+)$/ ||
+        die "expire $date: unexpected output `$_' at line $.\n";
+    ($hours,$access,$enabled,$auth,$user)=($1,$2,$3,$4,$5);
+    &try("$access/$auth") ||
+        &try("*/$auth") ||
+            &try("$access/*") ||
+                &try("*/*");
+}
+
+close(L);
+die "expire $date: udbmanage exit code $?\n" if $?;
+print "expire $date: done\n";
+
+sub try {
+    defined($exptime{$_[0]}) || return 0;
+    if ($hours > $exptime{$_[0]}) {
+        print("expire $date: ");
+        system($udbmanage,'--secret','-dv',"$user/$access");
+        $? && print(STDERR "expire $date : udbmanage gave code $?\n");
+    }
+    1;
+}

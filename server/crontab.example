@@ -1,0 +1,9 @@
+# Example crontab for groggs server:
+# mins hrs  dom mon dow	command
+29 *         * * *	echo exec /group/groggs/sbin/checkrgtpd | newgrp groggs
+53 5         * * *	echo /group/groggs/lib/server/expire | newgrp groggs
+54 6 * * * echo /group/groggs/lib/server/lock-updatesecret \>/dev/null | newgrp groggs
+55 6	     * * *	echo /group/groggs/lib/server/userdb-backup | newgrp groggs
+56 6	     * * *	echo /group/groggs/lib/server/scanlog | newgrp groggs
+# This file written by me, Ian Jackson, in 1993, 1994, 1995.
+# I hereby place it in the public domain.

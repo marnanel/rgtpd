@@ -1,0 +1,27 @@
+# Groggs makefile definitions for home-grown subdirectories
+#
+# This file written by me, Ian Jackson, in 1993, 1994, 1995.
+# I hereby place it in the public domain.
+
+INSTALL=/home/mjh22/groggs/src/install-pl -c
+INSTALL_DATA=$(INSTALL) -m 664
+INSTALL_PRIVDATA=$(INSTALL) -m 660
+INSTALL_PROGRAM=$(INSTALL) -m 775
+INSTALL_PRIVPROGRAM=$(INSTALL) -m 770
+
+# For ScumOS:
+#GLCFLAGS= -Wno-implicit -Dstrtoul=strtol -Dsig_atomic_t=int \
+#	  -DOWN_STRERROR -DOWN_WCOREDUMP
+#STRERROR= ../lib/strerror.o
+
+# For systems with sensible C libraries:
+GLCFLAGS= -Wmissing-prototypes
+STRERROR=
+
+# For HP-UX:
+#GLCFLAGS= -Wno-implicit
+#STRERROR=
+
+GLINCLUDES=-I../lib
+
+all:		$(TARGETS)

@@ -1,0 +1,15 @@
+# Groggs makefile definitions for all subdirectories
+#
+# This file written by me, Ian Jackson, in 1993, 1994, 1995.
+# I hereby place it in the public domain.
+
+CC=gcc
+CFLAGS= -Wall -Wwrite-strings -O2 $(GLCFLAGS) $(GLINCLUDES)
+LDFLAGS= -s
+
+prefix=/home/mjh22/groggs
+bindir=$(prefix)/bin/Linux
+adminbindir=$(prefix)/sbin
+servlibdir=$(prefix)/lib/server
+instserver=$(servlibdir)/rgtpd
+infodir=$(prefix)/info
