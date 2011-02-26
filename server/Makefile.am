@@ -1,4 +1,4 @@
-libexec_PROGRAMS = rgtpd
+libexec_PROGRAMS = rgtpd rgtpd-udbmanage
 
 rgtpd_SOURCES = \
 	groggsd.c \
@@ -9,5 +9,14 @@ rgtpd_SOURCES = \
 	md5.h \
 	misc.c \
 	misc.h \
-	userdb.c
+	userdb.c \
+	userdb.h
+
+rgtpd_udbmanage_SOURCES = \
+	udbmanage.c \
+	userdb.c \
+	userdb.h \
+	misc.c \
+	misc.h \
+	sehandle.c
 

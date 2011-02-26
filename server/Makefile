@@ -34,7 +34,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = i686-pc-linux-gnu
 host_triplet = i686-pc-linux-gnu
-libexec_PROGRAMS = rgtpd$(EXEEXT)
+libexec_PROGRAMS = rgtpd$(EXEEXT) rgtpd-udbmanage$(EXEEXT)
 subdir = server
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -57,6 +57,10 @@ rgtpd_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
+am_rgtpd_udbmanage_OBJECTS = udbmanage.$(OBJEXT) userdb.$(OBJEXT) \
+	misc.$(OBJEXT) sehandle.$(OBJEXT)
+rgtpd_udbmanage_OBJECTS = $(am_rgtpd_udbmanage_OBJECTS)
+rgtpd_udbmanage_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -83,8 +87,8 @@ am__v_CCLD_0 = @echo "  CCLD  " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(rgtpd_SOURCES)
-DIST_SOURCES = $(rgtpd_SOURCES)
+SOURCES = $(rgtpd_SOURCES) $(rgtpd_udbmanage_SOURCES)
+DIST_SOURCES = $(rgtpd_SOURCES) $(rgtpd_udbmanage_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -209,7 +213,16 @@ rgtpd_SOURCES = \
 	md5.h \
 	misc.c \
 	misc.h \
-	userdb.c
+	userdb.c \
+	userdb.h
+
+rgtpd_udbmanage_SOURCES = \
+	udbmanage.c \
+	userdb.c \
+	userdb.h \
+	misc.c \
+	misc.h \
+	sehandle.c
 
 all: all-am
 
@@ -291,6 +304,9 @@ clean-libexecPROGRAMS:
 rgtpd$(EXEEXT): $(rgtpd_OBJECTS) $(rgtpd_DEPENDENCIES) 
 	@rm -f rgtpd$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rgtpd_OBJECTS) $(rgtpd_LDADD) $(LIBS)
+rgtpd-udbmanage$(EXEEXT): $(rgtpd_udbmanage_OBJECTS) $(rgtpd_udbmanage_DEPENDENCIES) 
+	@rm -f rgtpd-udbmanage$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(rgtpd_udbmanage_OBJECTS) $(rgtpd_udbmanage_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -301,6 +317,8 @@ distclean-compile:
 include ./$(DEPDIR)/groggsd.Po
 include ./$(DEPDIR)/md5.Po
 include ./$(DEPDIR)/misc.Po
+include ./$(DEPDIR)/sehandle.Po
+include ./$(DEPDIR)/udbmanage.Po
 include ./$(DEPDIR)/userdb.Po
 
 .c.o:
