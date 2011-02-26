@@ -83,7 +83,7 @@ enum yesno { yn_no, yn_yes };
 
 static int mode=-1; /* one of the modes */
 static int noprompt=-1; /* each of these is a yesno */
-static int showsecret=-1, status=-1, verbose=-1, restrict=-1;
+static int showsecret=-1, status=-1, verbose=-1, restricted=-1;
 static int secretbytes=-1;
 static unsigned char secret[SECRET_MAXBYTES];
 static int ident=-1, disabled=-1;
@@ -107,7 +107,7 @@ static const char *const acs[]={ "none","read","write","edit",0 };
 static const char *const ids[]={ "none","md5new","md5",0 };
 
 static void of_file(const char *file) {
-  if (restrict>=0) usage("--file option not available in restricted access mode");
+  if (restricted>=0) usage("--file option not available in restricted access mode");
   if (udbfile) usage("--file option repeated");
   udbfile= file;
 }
@@ -133,7 +133,7 @@ static const struct optinfo optinfos[]= {
   { 't', "tidytest",  0,  &mode,       mo_tidytest, 0        },
   { 's', "status",    0,  &status,     yn_yes,      0        },
   { 'v', "verbose",   0,  &verbose,    yn_yes,      0        },
-  {  0,  "restrict",  0,  &restrict,   yn_yes,      0        },
+  {  0,  "restrict",  0,  &restricted, yn_yes,      0        },
   {  0,  "noprompt",  0,  &noprompt,   yn_yes,      0        },
   { 'q', "quiet",     0,  &verbose,    yn_no,       0        },
   { 'f', "file",      1,  0,           0,           of_file  },
