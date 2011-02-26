@@ -184,6 +184,9 @@ static void vlog(enum loglevel level, const char *fmt, va_list al) {
   fflush(stderr);
 }
   
+/* Rename this function so it doesn't clash with a builtin. -tjat2 */
+#define log groglog
+
 static void log(enum loglevel level, const char *fmt, ...) {
   va_list al;
   va_start(al,fmt);
