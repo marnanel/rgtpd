@@ -42,7 +42,7 @@ If you do not wish to proceed with the registration issue a QUIT command.\r\n\
 #define NEWUSERACCESS          al_write
   
 /* Program names */
-#define PREFIX_DIR             "/home/mjh22/groggs/"
+#define PREFIX_DIR             "/tmp/"
 #define BIN_DIR                PREFIX_DIR "bin/Linux/"
 #define ADMINBIN_DIR           PREFIX_DIR "sbin/"
 #define PROGLIB_DIR            PREFIX_DIR "lib/server/"
@@ -52,7 +52,7 @@ If you do not wish to proceed with the registration issue a QUIT command.\r\n\
 #define UDBM_PROGRAM           ADMINBIN_DIR "udbmanage"
 
 /* Spool filename prefixes and suffixes */
-#define SPOOL_DIR              "/home/mjh22/groggs/spool/"
+#define SPOOL_DIR              "/tmp/spool/"
 #define EDITED_FILENAMESFX     ".edited"
 #define WITHDRAWN_FILENAMESFX  ".withdrawn"
 
