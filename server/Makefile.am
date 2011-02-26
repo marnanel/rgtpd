@@ -2,7 +2,7 @@ libexec_PROGRAMS = rgtpd rgtpd-udbmanage
 
 rgtpd_SOURCES = \
 	groggsd.c \
-	groggsd.h \
+	config.h \
 	rgtp.h \
 	ehandle.h \
 	md5.c \

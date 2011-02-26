@@ -206,7 +206,7 @@ top_builddir = ..
 top_srcdir = ..
 rgtpd_SOURCES = \
 	groggsd.c \
-	groggsd.h \
+	config.h \
 	rgtp.h \
 	ehandle.h \
 	md5.c \
