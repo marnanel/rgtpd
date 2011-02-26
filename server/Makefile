@@ -50,7 +50,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_rgtpd_OBJECTS = groggsd.$(OBJEXT)
+am_rgtpd_OBJECTS = groggsd.$(OBJEXT) md5.$(OBJEXT) misc.$(OBJEXT) \
+	userdb.$(OBJEXT)
 rgtpd_OBJECTS = $(am_rgtpd_OBJECTS)
 rgtpd_LDADD = $(LDADD)
 AM_V_lt = $(am__v_lt_$(V))
@@ -202,7 +203,13 @@ top_srcdir = ..
 rgtpd_SOURCES = \
 	groggsd.c \
 	groggsd.h \
-	rgtp.h
+	rgtp.h \
+	ehandle.h \
+	md5.c \
+	md5.h \
+	misc.c \
+	misc.h \
+	userdb.c
 
 all: all-am
 
@@ -292,6 +299,9 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/groggsd.Po
+include ./$(DEPDIR)/md5.Po
+include ./$(DEPDIR)/misc.Po
+include ./$(DEPDIR)/userdb.Po
 
 .c.o:
 	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

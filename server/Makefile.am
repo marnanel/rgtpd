@@ -5,5 +5,9 @@ rgtpd_SOURCES = \
 	groggsd.h \
 	rgtp.h \
 	ehandle.h \
-	md5.h
+	md5.c \
+	md5.h \
+	misc.c \
+	misc.h \
+	userdb.c
 
