@@ -1,2 +1,6 @@
 This is the original rgtpd which runs GROGGS.
+It was written by Ian Jackson.
+
+I (Thomas Thurman) am in the process of converting it to autoconf.
+Do not expect it to work for you yet.
 
